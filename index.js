@@ -48,6 +48,27 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/my-services", async (req, res) => {
+      const { email } = req.query;
+
+      const query = { email: email };
+      const result = await petServices.find(query).toArray();
+      res.send(result);
+    });
+
+    app.put("/update/:id", async (req, res) => {
+      const data = req.body;
+      const id = req.params;
+      const query = { _id: new ObjectId(id) };
+
+      const updateService = {
+        $set: data,
+      };
+
+      const result = await petServices.updateOne(query, updateService);
+      res.send(result);
+    });
+
     await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
